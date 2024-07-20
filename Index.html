@@ -1,0 +1,359 @@
+<html><head><base href="https://websim.io/%20put%20a%20emoji%20on%20the%20moodbar.%20Put%20a%20tastebar%20and%20put%20food%20on%20the%20tastebar%20make%20it%20endless.%20Make%20it%20so%20you%20can%20die%20when%20you%20lose%20al%20lose%20your%20l%20of%20your%20health.%20When%20you%20die%20a%20animation%20activates.%20When%20you%20lose%20your%20money%20you%20die%20with%20animation.%20Put%20a%20pool%20bar.%20Makee%20a%20fired%20bar,keep%20everything%20the%20same%20but%20make%20a%20day%20offbar%20make%20a%20buttons%20so%20people%20can%20control%20there%20charter%20when%20the%20player%20presses%20the%20buttons%20it%20will%20activate%20breathbar,%20hungerbar%20make%20a%20breath%20button%20make%20the%20UI%20work%20when%20the%20player%20presses%20the%20buttons%20it%20activates"><title>Endless Life Simulator: Ultimate Control Edition</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 20px;
+    transition: background-color 2s;
+  }
+  #game-container {
+    max-width: 600px;
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    transition: transform 2s, opacity 2s;
+  }
+  h1 {
+    color: #333;
+    text-align: center;
+  }
+  #story {
+    margin-bottom: 20px;
+  }
+  #controls {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  button {
+    margin: 5px;
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.1s;
+  }
+  button:hover {
+    background-color: #45a049;
+  }
+  button:active {
+    transform: scale(0.95);
+  }
+  #clock {
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  .bar-container {
+    width: 100%;
+    background-color: #ddd;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    overflow: hidden;
+    position: relative;
+  }
+  .bar {
+    height: 20px;
+    text-align: center;
+    line-height: 20px;
+    color: white;
+    transition: width 0.5s;
+  }
+  #health-bar { background-color: #ff4d4d; }
+  #mood-bar { background-color: #4d79ff; }
+  #taste-bar { background-color: #ffa64d; }
+  #pool-bar { background-color: #00CED1; }
+  #fired-bar { background-color: #FF6347; }
+  #day-off-bar { background-color: #9932CC; }
+  #breath-bar { background-color: #20B2AA; }
+  #hunger-bar { background-color: #DAA520; }
+  .emoji {
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 18px;
+  }
+  #stats {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  #game-over {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    font-size: 48px;
+    text-align: center;
+    padding-top: 20%;
+    z-index: 1000;
+  }
+  @keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+  }
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  @keyframes breathe {
+    0% { transform: scale(1) translateY(-50%); }
+    50% { transform: scale(1.1) translateY(-50%); }
+    100% { transform: scale(1) translateY(-50%); }
+  }
+</style>
+</head>
+<body>
+<div id="game-container">
+  <h1>Endless Life Simulator: Ultimate Control Edition</h1>
+  <div id="clock">Day 1, 9:00 AM</div>
+  <div id="stats">
+    <span>Energy: <span id="energy">100</span></span>
+    <span>Money: $<span id="money">100</span></span>
+  </div>
+  <div class="bar-container">
+    <div id="health-bar" class="bar" style="width: 100%;">Health: 100%</div>
+  </div>
+  <div class="bar-container">
+    <div id="mood-bar" class="bar" style="width: 70%;">Mood: 70%</div>
+    <span id="mood-emoji" class="emoji">😐</span>
+  </div>
+  <div class="bar-container">
+    <div id="taste-bar" class="bar" style="width: 50%;">Taste: 50%</div>
+    <span id="taste-food" class="emoji">🍽️</span>
+  </div>
+  <div class="bar-container">
+    <div id="pool-bar" class="bar" style="width: 0%;">Pool Time: 0%</div>
+    <span id="pool-emoji" class="emoji">🏊</span>
+  </div>
+  <div class="bar-container">
+    <div id="fired-bar" class="bar" style="width: 100%;">Job Security: 100%</div>
+    <span id="fired-emoji" class="emoji">👔</span>
+  </div>
+  <div class="bar-container">
+    <div id="day-off-bar" class="bar" style="width: 0%;">Day Off: 0%</div>
+    <span id="day-off-emoji" class="emoji">🏖️</span>
+  </div>
+  <div class="bar-container">
+    <div id="breath-bar" class="bar" style="width: 100%;">Breath: 100%</div>
+    <span id="breath-emoji" class="emoji">💨</span>
+  </div>
+  <div class="bar-container">
+    <div id="hunger-bar" class="bar" style="width: 100%;">Hunger: 100%</div>
+    <span id="hunger-emoji" class="emoji">🍽️</span>
+  </div>
+  <div id="story">
+    Welcome to your ultimate life control adventure! Use the buttons below to manage every aspect of your character's life. Be careful - losing all your health, money, breath, or becoming too hungry will end the game!
+  </div>
+  <div id="controls">
+    <button onclick="activateButton('work')">Work</button>
+    <button onclick="activateButton('rest')">Rest</button>
+    <button onclick="activateButton('exercise')">Exercise</button>
+    <button onclick="activateButton('pool')">Go to Pool</button>
+    <button onclick="activateButton('dayOff')">Take Day Off</button>
+    <button onclick="activateButton('eat')">Eat</button>
+    <button onclick="activateButton('breathe')" id="breath-button">Take a Breath</button>
+  </div>
+</div>
+<div id="game-over">Game Over</div>
+
+<script>
+let day = 1;
+let time = 9 * 60; // Start at 9:00 AM
+let health = 100;
+let mood = 70;
+let taste = 50;
+let poolTime = 0;
+let jobSecurity = 100;
+let dayOff = 0;
+let energy = 100;
+let money = 100;
+let breath = 100;
+let hunger = 100;
+
+const foods = [
+  { name: "Gourmet Burger", emoji: "🍔", cost: 15, taste: 20, health: -5, mood: 10, hunger: 30 },
+  { name: "Salad", emoji: "🥗", cost: 10, taste: 5, health: 10, mood: 5, hunger: 20 },
+  { name: "Pizza", emoji: "🍕", cost: 12, taste: 15, health: -5, mood: 15, hunger: 25 },
+  { name: "Sushi", emoji: "🍣", cost: 20, taste: 25, health: 5, mood: 20, hunger: 15 },
+  { name: "Ice Cream", emoji: "🍦", cost: 5, taste: 30, health: -10, mood: 25, hunger: 10 },
+  { name: "Fruit Platter", emoji: "🍎", cost: 8, taste: 10, health: 15, mood: 10, hunger: 15 },
+  { name: "Steak", emoji: "🥩", cost: 25, taste: 30, health: 0, mood: 20, hunger: 35 },
+  { name: "Ramen", emoji: "🍜", cost: 13, taste: 18, health: 0, mood: 15, hunger: 30 },
+  { name: "Taco", emoji: "🌮", cost: 8, taste: 15, health: -3, mood: 12, hunger: 20 },
+  { name: "Smoothie", emoji: "🥤", cost: 7, taste: 12, health: 10, mood: 8, hunger: 10 }
+];
+
+function updateClock() {
+  const hours = Math.floor(time / 60);
+  const minutes = time % 60;
+  document.getElementById('clock').textContent = 
+    `Day ${day}, ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+}
+
+function updateBars() {
+  document.getElementById('health-bar').style.width = `${health}%`;
+  document.getElementById('health-bar').textContent = `Health: ${health}%`;
+  document.getElementById('mood-bar').style.width = `${mood}%`;
+  document.getElementById('mood-bar').textContent = `Mood: ${mood}%`;
+  document.getElementById('taste-bar').style.width = `${taste}%`;
+  document.getElementById('taste-bar').textContent = `Taste: ${taste}%`;
+  document.getElementById('pool-bar').style.width = `${poolTime}%`;
+  document.getElementById('pool-bar').textContent = `Pool Time: ${poolTime}%`;
+  document.getElementById('fired-bar').style.width = `${jobSecurity}%`;
+  document.getElementById('fired-bar').textContent = `Job Security: ${jobSecurity}%`;
+  document.getElementById('day-off-bar').style.width = `${dayOff}%`;
+  document.getElementById('day-off-bar').textContent = `Day Off: ${dayOff}%`;
+  document.getElementById('breath-bar').style.width = `${breath}%`;
+  document.getElementById('breath-bar').textContent = `Breath: ${breath}%`;
+  document.getElementById('hunger-bar').style.width = `${hunger}%`;
+  document.getElementById('hunger-bar').textContent = `Hunger: ${hunger}%`;
+  document.getElementById('energy').textContent = energy;
+  document.getElementById('money').textContent = money;
+  updateEmojis();
+}
+
+function updateEmojis() {
+  document.getElementById('mood-emoji').textContent = mood >= 80 ? '😄' : mood >= 60 ? '🙂' : mood >= 40 ? '😐' : mood >= 20 ? '😕' : '😢';
+  document.getElementById('taste-food').textContent = taste >= 80 ? '🍰' : taste >= 60 ? '🍕' : taste >= 40 ? '🍔' : taste >= 20 ? '🥪' : '🥦';
+  document.getElementById('pool-emoji').textContent = poolTime >= 80 ? '🏊‍♂️' : poolTime >= 60 ? '💦' : poolTime >= 40 ? '🌊' : poolTime >= 20 ? '💧' : '🏊';
+  document.getElementById('fired-emoji').textContent = jobSecurity >= 80 ? '👔' : jobSecurity >= 60 ? '💼' : jobSecurity >= 40 ? '😰' : jobSecurity >= 20 ? '🔥' : '🚫';
+  document.getElementById('day-off-emoji').textContent = dayOff >= 80 ? '🏝️' : dayOff >= 60 ? '🌴' : dayOff >= 40 ? '🏖️' : dayOff >= 20 ? '🌞' : '💼';
+  document.getElementById('breath-emoji').textContent = breath >= 80 ? '🌬️' : breath >= 60 ? '💨' : breath >= 40 ? '😮‍💨' : breath >= 20 ? '😰' : '😵';
+  document.getElementById('hunger-emoji').textContent = hunger >= 80 ? '🍽️' : hunger >= 60 ? '🍴' : hunger >= 40 ? '🥄' : hunger >= 20 ? '🍽️' : '🤤';
+}
+
+function advanceTime(minutes) {
+  time += minutes;
+  if (time >= 24 * 60) {
+    day++;
+    time = time % (24 * 60);
+    energy = Math.min(100, energy + 50);
+    poolTime = Math.max(0, poolTime - 20);
+    jobSecurity = Math.min(100, jobSecurity + 5);
+    dayOff = Math.max(0, dayOff - 10);
+  }
+  breath = Math.max(0, breath - minutes / 10);
+  hunger = Math.max(0, hunger - minutes / 15);
+  updateClock();
+  checkGameOver();
+}
+
+function adjustStats(healthChange, moodChange, tasteChange, poolTimeChange, jobSecurityChange, dayOffChange, energyChange, moneyChange, breathChange, hungerChange) {
+  health = Math.max(0, Math.min(100, health + healthChange));
+  mood = Math.max(0, Math.min(100, mood + moodChange));
+  taste = Math.max(0, Math.min(100, taste + tasteChange));
+  poolTime = Math.max(0, Math.min(100, poolTime + poolTimeChange));
+  jobSecurity = Math.max(0, Math.min(100, jobSecurity + jobSecurityChange));
+  dayOff = Math.max(0, Math.min(100, dayOff + dayOffChange));
+  energy = Math.max(0, Math.min(100, energy + energyChange));
+  money += moneyChange;
+  breath = Math.max(0, Math.min(100, breath + breathChange));
+  hunger = Math.max(0, Math.min(100, hunger + hungerChange));
+  updateBars();
+  checkGameOver();
+}
+
+function checkGameOver() {
+  if (health <= 0) {
+    gameOver("You died from poor health!");
+  } else if (money < 0) {
+    gameOver("You went bankrupt!");
+  } else if (jobSecurity <= 0) {
+    gameOver("You got fired from your job!");
+  } else if (breath <= 0) {
+    gameOver("You ran out of breath!");
+  } else if (hunger <= 0) {
+    gameOver("You starved to death!");
+  }
+}
+
+function activateButton(action) {
+  const story = document.getElementById('story');
+  
+  switch(action) {
+    case 'work':
+      advanceTime(240);
+      adjustStats(-5, -10, -5, -10, 10, -5, -30, 50, -10, -20);
+      story.innerHTML = "You worked hard for a few hours. Your boss seems pleased, but you're tired, hungry, and could use a day off.";
+      break;
+    case 'rest':
+      advanceTime(120);
+      adjustStats(10, 5, -5, 0, -5, 10, 20, 0, 5, -10);story.innerHTML = "You took some time to rest and recharge. It feels good, but your boss might not approve and you're getting hungry.";
+      break;
+    case 'exercise':
+      advanceTime(60);
+      adjustStats(15, 10, -5, 0, 0, 5, -10, 0, -15, -15);
+      story.innerHTML = "You had a great workout! You feel healthier and more balanced, but you're tired, out of breath, and hungry.";
+      break;
+    case 'pool':
+      advanceTime(90);
+      adjustStats(5, 15, 0, 40, -10, 20, -5, -10, -5, -10);
+      story.innerHTML = "You enjoyed some time at the pool. It was relaxing and feels like a mini-vacation, but it cost you some money and job security. You're also getting hungry.";
+      break;
+    case 'dayOff':
+      if (dayOff >= 20) {
+        advanceTime(480);
+        adjustStats(20, 30, 10, 20, -20, -20, 40, -30, -20, -40);
+        story.innerHTML = "You took a well-deserved day off! Your mood and health improved significantly, but it cost you some money and job security. You're also very hungry and need to catch your breath.";
+      } else {
+        story.innerHTML = "You don't have enough day off time accumulated. Keep working to earn more!";
+      }
+      break;
+    case 'eat':
+      const randomFood = foods[Math.floor(Math.random() * foods.length)];
+      if (money >= randomFood.cost) {
+        advanceTime(30);
+        adjustStats(randomFood.health, randomFood.mood, randomFood.taste, 0, -2, 2, 10, -randomFood.cost, -5, randomFood.hunger);
+        story.innerHTML = `You enjoyed a delicious ${randomFood.name} ${randomFood.emoji}. Yum! Your hunger is satisfied, but your boss might not approve of the long lunch.`;
+      } else {
+        story.innerHTML = "You don't have enough money for that meal.";
+      }
+      break;
+    case 'breathe':
+      advanceTime(10);
+      adjustStats(2, 5, 0, 0, 0, 0, 5, 0, 30, -2);
+      story.innerHTML = "You took a moment for some deep breathing exercises. You feel more relaxed and your breath is restored, but you're slightly hungrier.";
+      break;
+  }
+  
+  if (energy <= 0) {
+    story.innerHTML += " You're exhausted and need to sleep.";
+    advanceTime(24 * 60 - time);
+    adjustStats(20, 10, 0, 0, 0, 0, 100, 0, 20, -30);
+  }
+}
+
+function gameOver(reason) {
+  const gameContainer = document.getElementById('game-container');
+  const gameOverScreen = document.getElementById('game-over');
+  
+  gameContainer.style.animation = 'fadeOut 2s forwards, spin 2s forwards';
+  document.body.style.backgroundColor = '#000';
+  
+  setTimeout(() => {
+    gameContainer.style.display = 'none';
+    gameOverScreen.style.display = 'block';
+    gameOverScreen.innerHTML = reason;
+  }, 2000);
+  
+  setTimeout(() => {
+    gameOverScreen.innerHTML += `<br>You survived for ${day} days.<br><button onclick="location.reload()">Play Again</button>`;
+  }, 3000);
+}
+
+updateClock();
+updateBars();
+</script>
+</body></html>
